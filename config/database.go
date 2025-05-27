@@ -2,24 +2,20 @@ package config
 
 import (
 	"fmt"
-	"log"
 	"os"
+	"time"
 
-	"github.com/joho/godotenv"
+	"tawtheeq-backend/utils"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
 var DB *gorm.DB
 
 func ConnectDatabase() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("❌ Error loading .env file")
-	}
-
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+	dsn := fmt.Sprintf(
+		"%s:%s@tcp(%s:%s)/%s?parseTime=true",
 		os.Getenv("DB_USER"),
 		os.Getenv("DB_PASSWORD"),
 		os.Getenv("DB_HOST"),
@@ -27,20 +23,24 @@ func ConnectDatabase() {
 		os.Getenv("DB_NAME"),
 	)
 
-	database, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(
-			func() logger.LogLevel {
-				if os.Getenv("LOGGING_ENABLE") == "true" {
-					return logger.Info
-				}
-				return logger.Silent
-			}(),
-		),
-	})
-	if err != nil {
-		log.Fatal("❌ Failed to connect to database!")
+	var db *gorm.DB
+	var err error
+
+	maxAttempts := 10
+	for i := 1; i <= maxAttempts; i++ {
+		db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+		if err == nil {
+			break
+		}
+
+		utils.HandleError(err, fmt.Sprintf("MySQL not ready, retry %d/%d", i, maxAttempts), utils.Warning)
+		time.Sleep(5 * time.Second)
 	}
 
-	DB = database
+	if err != nil {
+		panic("❌ Failed to connect to DB: " + err.Error())
+	}
+
+	DB = db
 	fmt.Println("✅ Connected to database")
 }

@@ -1,0 +1,112 @@
+version: "3.9"
+
+services:
+  app:
+    platform: linux/amd64
+    build:
+      context: .
+    container_name: tawtheeq-backend
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    env_file:
+      - .env
+    environment:
+      - LOGGING_ENABLE=${LOGGING_ENABLE}
+      - LOGGING_LIMIT=${LOGGING_LIMIT}
+      - LOGGING_LEVEL=${LOGGING_LEVEL}
+      - APP_PORT=${APP_PORT}
+      - FRONTEND_ORIGIN=${FRONTEND_ORIGIN}
+      - FRONTEND_RESET_PASSWORD=${FRONTEND_RESET_PASSWORD}
+      - TEMP_DIR=${TEMP_DIR}
+      - LOCALLY_UPLOAD_DIR=${LOCALLY_UPLOAD_DIR}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXP_HOURS=${JWT_EXP_HOURS}
+      - ENABLE_SWAGGER=${ENABLE_SWAGGER}
+      - SUPERADMIN_EMAIL=${SUPERADMIN_EMAIL}
+      - SUPERADMIN_PASSWORD=${SUPERADMIN_PASSWORD}
+      - PRIVATE_KEY_PATH=${PRIVATE_KEY_PATH}
+      - PUBLIC_KEY_PATH=${PUBLIC_KEY_PATH}
+      - RATE_LIMIT_ENABLED=${RATE_LIMIT_ENABLED}
+      - RATE_LIMIT=${RATE_LIMIT}
+      - RATE_LIMIT_WINDOW=${RATE_LIMIT_WINDOW}
+      - REDIS_ADDR=redis:6379
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_NAME=${DB_NAME}
+      - QR_GENERATOR=${QR_GENERATOR}
+      - QR_POSITION=${QR_POSITION}
+      - QR_MARGIN_X=${QR_MARGIN_X}
+      - QR_MARGIN_Y=${QR_MARGIN_Y}
+      - FRONTEND_VERIFY_URL=${FRONTEND_VERIFY_URL}
+      - IMAGE_TEXT_PREFIX=${IMAGE_TEXT_PREFIX}
+      - IMAGE_FONT_PATH=${IMAGE_FONT_PATH}
+      - IMAGE_FONT_SIZE=${IMAGE_FONT_SIZE}
+      - IMAGE_TEXT_COLOR=${IMAGE_TEXT_COLOR}
+      - IMAGE_BG_COLOR=${IMAGE_BG_COLOR}
+      - IMAGE_BG_OPACITY=${IMAGE_BG_OPACITY}
+      - IMAGE_TEXT_ALIGN=${IMAGE_TEXT_ALIGN}
+      - SMTP_EMAIL=${SMTP_EMAIL}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - S3_ENABLED=${S3_ENABLED}
+      - S3_ENDPOINT=minio:9000
+      - S3_ACCESS_KEY=${S3_ACCESS_KEY}
+      - S3_SECRET_KEY=${S3_SECRET_KEY}
+      - S3_BUCKET=${S3_BUCKET}
+      - S3_REGION=${S3_REGION}
+    volumes:
+      # - ./uploads:/app/uploads
+      - ./logs:/app/logs
+      - ./assets:/app/assets
+    depends_on:
+      - mysql
+      - redis
+      - minio
+
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: db
+    volumes:
+      - ./docker-data/mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  pma: 
+    image: phpmyadmin:latest
+    container_name: pma
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      # PMA_USER: root
+      # PMA_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      - mysql
+  redis:
+    image: redis:latest
+    container_name: redis
+    volumes:
+      - ./docker-data/redis:/data
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    ports:
+      - "9001:9001"
+    volumes:
+      - ./docker-data/minio:/data
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY}
+    command: server --console-address ":9001" /data

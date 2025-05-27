@@ -1,4 +1,6 @@
 logs
 assets
 uploads
+docker-data
 .env
+*.bak
