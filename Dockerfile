@@ -27,6 +27,8 @@ RUN apt-get update && apt-get install -y \
     openssl \
     perl \
     libimage-exiftool-perl \
+    mupdf-tools \
+    libmupdf-dev \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
@@ -35,5 +37,7 @@ WORKDIR /app
 
 COPY --from=builder /app/tawtheeq .
 COPY --from=builder /app/.env ./
+
+ENV LD_LIBRARY_PATH=/usr/local/lib
 
 ENTRYPOINT ["./tawtheeq"]

@@ -30,6 +30,7 @@ fi
 # Parse parameters
 BUILD_ARG=""
 DETACHED_ARG=""
+NO_CACHE_ARG=""
 
 for arg in "$@"; do
   case $arg in
@@ -39,8 +40,16 @@ for arg in "$@"; do
     -d|--detached)
       DETACHED_ARG="-d"
       ;;
+    no-cache|--no-cache)
+      NO_CACHE_ARG="--no-cache"
+      ;;
   esac
 done
+
+if [ -n "$NO_CACHE_ARG" ]; then
+  echo "⚡ Running: $COMPOSE_COMMAND build $NO_CACHE_ARG"
+  $COMPOSE_COMMAND build $NO_CACHE_ARG
+fi
 
 echo "⚡ Running: $COMPOSE_COMMAND up $BUILD_ARG $DETACHED_ARG"
 $COMPOSE_COMMAND up $BUILD_ARG $DETACHED_ARG
