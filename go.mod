@@ -8,6 +8,8 @@ require (
 	github.com/gen2brain/go-fitz v1.24.14
 	github.com/gofiber/fiber/v2 v2.52.6
 	github.com/joho/godotenv v1.5.1
+	github.com/minio/minio-go/v7 v7.0.92
+	github.com/redis/go-redis/v9 v9.8.0
 	github.com/signintech/gopdf v0.32.0
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/swaggo/swag v1.16.4
@@ -34,9 +36,7 @@ require (
 	github.com/mailru/easyjson v0.7.6 // indirect
 	github.com/minio/crc64nvme v1.0.1 // indirect
 	github.com/minio/md5-simd v1.1.2 // indirect
-	github.com/minio/minio-go/v7 v7.0.92 // indirect
 	github.com/philhofer/fwd v1.1.3-0.20240916144458-20a13a1f6b7c // indirect
-	github.com/redis/go-redis/v9 v9.8.0 // indirect
 	github.com/rs/xid v1.6.0 // indirect
 	github.com/swaggo/files/v2 v2.0.2 // indirect
 	github.com/tinylib/msgp v1.3.0 // indirect
@@ -49,7 +49,6 @@ require (
 	github.com/andybalholm/brotli v1.1.0 // indirect
 	github.com/ebitengine/purego v0.8.0 // indirect
 	github.com/gofiber/swagger v1.1.1
-	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/google/uuid v1.6.0
