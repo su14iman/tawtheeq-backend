@@ -130,7 +130,7 @@ A digital file signing and verification system built with Go and RSA.
 
 | Method | Endpoint                                         | Description                                 | Roles Required      |
 |--------|--------------------------------------------------|---------------------------------------------|---------------------|
-| GET    | `/api/documents/`                                | List all visible documents                  | SuperAdmin          |
+| GET    | `/api/documents/visible`                         | List all visible documents                  | SuperAdmin          |
 | GET    | `/api/documents/hidden`                          | List all hidden documents                   | SuperAdmin          |
 | GET    | `/api/documents/team/:team_id/visible`           | List visible documents for a team           | SuperAdmin          |
 | GET    | `/api/documents/team/:team_id/hidden`            | List hidden documents for a team            | SuperAdmin          |
