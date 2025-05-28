@@ -61,7 +61,7 @@ func SetupRoutes(app *fiber.App) {
 
 	// Documents
 	documents := api.Group("/documents")
-	documents.Get("/", middlewares.RequireRoles(string(models.SuperAdminRole)), controllers.GetAllDocumentsVisible)
+	documents.Get("/visible", middlewares.RequireRoles(string(models.SuperAdminRole)), controllers.GetAllDocumentsVisible)
 	documents.Get("/hidden", middlewares.RequireRoles(string(models.SuperAdminRole)), controllers.GetAllDocumentsHidden)
 	documents.Get("/team/:team_id/visible", middlewares.RequireRoles(string(models.SuperAdminRole)), controllers.GetAllDocumentsFromTeamVisible)
 	documents.Get("/team/:team_id/hidden", middlewares.RequireRoles(string(models.SuperAdminRole)), controllers.GetAllDocumentsFromTeamHidden)
