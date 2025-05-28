@@ -1,6 +1,11 @@
 FROM mcr.microsoft.com/devcontainers/go:1.21
 
-# Install exiftool and bash
-RUN apt-get update && \
-    apt-get install -y libimage-exiftool-perl bash && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y \
+    bash \
+    openssl \
+    perl \
+    libimage-exiftool-perl \
+    mupdf-tools \
+    libmupdf-dev \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
